@@ -1,0 +1,7 @@
+{
+  "name": "OmniConvert Studio",
+  "description": "Professional multi-format converter and media specialist matrix with real-time conversion for images, audio, video, and documents.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
