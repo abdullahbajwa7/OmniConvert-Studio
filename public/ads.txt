@@ -1,3 +1,2 @@
 # Google AdSense Publisher Account
-# Replace pub-XXXXXXXXXXXXXXXX with your actual AdSense Publisher ID
-google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+google.com, pub-5829634107591727, DIRECT, f08c47fec0942fa0
