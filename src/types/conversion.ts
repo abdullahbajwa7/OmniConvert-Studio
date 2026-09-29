@@ -17,7 +17,6 @@ export interface FormatMeta {
   categoryLabel: string;
   mimeType: string;
   description: string;
-  romanUrduDescription: string;
   supportsAlpha: boolean;
   isLossy: boolean | 'both';
   maxBitDepth: number;
@@ -57,7 +56,6 @@ export interface ConversionJob {
   convertedAt?: Date;
   ruleExplanation?: {
     title: string;
-    romanUrdu: string;
     english: string;
     warning?: string;
   };
@@ -68,5 +66,4 @@ export interface MatrixCellCompatibility {
   icon: string;
   label: string;
   notes: string;
-  romanUrdu: string;
 }

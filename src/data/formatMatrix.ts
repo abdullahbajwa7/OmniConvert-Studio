@@ -5,8 +5,6 @@ export const GOLDEN_RULES = [
     number: 1,
     title: 'Raster to Raster',
     formats: 'JPG, PNG, WEBP, BMP, TIFF, HEIC, AVIF, GIF, ICO, TGA, DDS, PCX',
-    romanUrdu:
-      'Ye aapas me 100% direct aur baghair kisi issue ke convert ho jate hain. Sirf transparency aur compression loss ka dhyan rakhna hota hai (e.g. PNG to JPG me transparent background white/black ban jata hai kyunke JPG transparency support nahi karta).',
     english:
       'Direct 1:1 pixel raster re-encoding. Lossless formats (PNG, TIFF, lossless WebP) preserve pixel exactness; lossy formats (JPG, lossy WebP, AVIF) discard high-frequency DCT/wavelet data. Alpha channels are flattened when converting to formats without transparency support.',
     directness: '100% Direct Compatible',
@@ -16,8 +14,6 @@ export const GOLDEN_RULES = [
     number: 2,
     title: 'Vector to Raster',
     formats: 'SVG, AI, EPS, CDR, PDF ➔ JPG, PNG, WEBP, TIFF, etc.',
-    romanUrdu:
-      'Bohat asan hai, bas output resolution (e.g. 1080p, 4K, ya 300 DPI) set karke rasterize karna hota hai. Infinite mathematical formulas ko physical pixels grid me draw kiya jata hai.',
     english:
       'Vector primitives (Bézier curves, polygons, coordinates) are rendered onto a discrete raster pixel matrix at a user-specified resolution or print DPI. Once rasterized, infinite scalability is replaced with fixed pixel dimensions.',
     directness: 'Resolution / DPI Dependent',
@@ -27,8 +23,6 @@ export const GOLDEN_RULES = [
     number: 3,
     title: 'Raster to Vector',
     formats: 'JPG, PNG ➔ SVG, AI, EPS, PDF',
-    romanUrdu:
-      'Direct 1:1 mathematical conversion nahi hoti; software me Image Trace ya Vectorization karni parti hai. Pixels ke edges aur color boundaries detect karke vector paths bante hain.',
     english:
       'Algorithmic edge detection, color quantization, and contour tracing (e.g., Potrace, AutoTrace). Effective for logos, line art, and typography. Complex photographic rasters produce heavy, complex vector path meshes rather than clean shapes.',
     directness: 'Requires Contour / Vector Tracing',
@@ -38,8 +32,6 @@ export const GOLDEN_RULES = [
     number: 4,
     title: 'Project Files to Image',
     formats: 'PSD, PSB, XCF, KRA, AFPHOTO ➔ JPG, PNG, WEBP',
-    romanUrdu:
-      'Sab layers flat (merge) ho kar single picture ban jati hain. Adjustment layers, smart objects aur text layers editable nahi rehte. Reverse me normal image as single background layer import hoti hai.',
     english:
       'Multi-layer composition, non-destructive layer masks, blending modes, and text objects are composited and baked into a single composite raster layer. Reverse import loads the raster as an unlayered background plane.',
     directness: 'One-Way Compositing (Flattened)',
@@ -49,8 +41,6 @@ export const GOLDEN_RULES = [
     number: 5,
     title: 'Image to Camera RAW',
     formats: 'Any Image ➔ CR2, NEF, ARW, RAF, RW2',
-    romanUrdu:
-      'Namumkin hai! Kyunke camera sensor ka physical uncompressed raw photosite bayer data software wapas create nahi kar sakta. Sirf generic Adobe DNG container wrap ho sakta hai, proprietary RAW recreate nahi ho sakta.',
     english:
       'Physically impossible. Proprietary camera RAW files contain un-demosaiced sensor electrical readouts and Bayer CFA voltages direct from the camera hardware. Rendered images can only be wrapped into an Adobe DNG linear container; true proprietary camera RAW data cannot be synthesized.',
     directness: 'Technically Impossible (One-Way Hardware Readout)',
@@ -67,7 +57,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Raster Image',
     mimeType: 'image/jpeg',
     description: 'Universal lossy raster image standard with DCT compression.',
-    romanUrduDescription: 'Sub se aam photo format. Lossy compression hoti hai aur transparency support nahi karta.',
     supportsAlpha: false,
     isLossy: true,
     maxBitDepth: 8,
@@ -81,7 +70,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Raster Image',
     mimeType: 'image/jpeg',
     description: 'Joint Photographic Experts Group raster standard.',
-    romanUrduDescription: 'JPEG standard. Photos ke liye best hai lekin transparency nahi hoti.',
     supportsAlpha: false,
     isLossy: true,
     maxBitDepth: 8,
@@ -95,7 +83,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Raster Image',
     mimeType: 'image/png',
     description: 'Lossless bitmap image format with 8-bit alpha channel transparency.',
-    romanUrduDescription: 'Lossless format hai jo transparent background aur sharp graphics ke liye ideal hai.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 16,
@@ -109,7 +96,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Modern Raster',
     mimeType: 'image/webp',
     description: 'Modern web image format supporting both lossy/lossless and alpha channel.',
-    romanUrduDescription: 'Google ka modern web format. PNG se 26% aur JPG se 34% chhota size deta hai.',
     supportsAlpha: true,
     isLossy: 'both',
     maxBitDepth: 8,
@@ -123,7 +109,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Next-Gen Raster',
     mimeType: 'image/avif',
     description: 'Cutting-edge AV1 intra-frame compressed image container with HDR.',
-    romanUrduDescription: 'Sab se modern compression format. High dynamic range aur extreme compression deta hai.',
     supportsAlpha: true,
     isLossy: 'both',
     maxBitDepth: 12,
@@ -137,7 +122,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Raster Image',
     mimeType: 'image/gif',
     description: '8-bit indexed color raster format with animation and 1-bit transparency.',
-    romanUrduDescription: '256 colors palette aur animated loops ke liye purana standard format.',
     supportsAlpha: true,
     isLossy: true,
     maxBitDepth: 8,
@@ -151,7 +135,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Uncompressed Raster',
     mimeType: 'image/bmp',
     description: 'Standard uncompressed Windows bitmap raster graphics format.',
-    romanUrduDescription: 'Bagair compression ke raw pixel grid data. File size bohot bara hota hai.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 32,
@@ -165,7 +148,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Print / Archival Raster',
     mimeType: 'image/tiff',
     description: 'High-depth professional print, scanning, and publishing raster format.',
-    romanUrduDescription: 'Professional printing aur archiving ke liye lossless high bit-depth format.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 32,
@@ -179,7 +161,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'System Icon Raster',
     mimeType: 'image/x-icon',
     description: 'Multi-resolution container for desktop favicons and system icons.',
-    romanUrduDescription: 'Favicon aur operating system icons ka multi-resolution container.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 32,
@@ -193,7 +174,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Game Raster',
     mimeType: 'image/x-tga',
     description: 'Game development and 3D texture raster format with direct alpha.',
-    romanUrduDescription: 'Game engines aur 3D textures me uncompressed alpha maps ke liye use hota hai.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 32,
@@ -207,7 +187,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'GPU Texture Raster',
     mimeType: 'image/vnd-ms.dds',
     description: 'DirectX compressed GPU texture container with DXT/BC compression and mipmaps.',
-    romanUrduDescription: 'DirectX GPU texture format jo graphic card direct VRAM me load karta hai.',
     supportsAlpha: true,
     isLossy: 'both',
     maxBitDepth: 32,
@@ -221,7 +200,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Legacy Raster',
     mimeType: 'image/x-pcx',
     description: 'Historic MS-DOS Paintbrush raster format with simple run-length encoding.',
-    romanUrduDescription: 'DOS era ka purana graphic format jo RLE compression use karta hai.',
     supportsAlpha: false,
     isLossy: false,
     maxBitDepth: 24,
@@ -237,7 +215,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Mobile / HDR',
     mimeType: 'image/heic',
     description: 'Apple iOS camera photo container based on HEVC/H.265 compression.',
-    romanUrduDescription: 'iPhone ka default camera format. High quality aur depth maps support karta hai.',
     supportsAlpha: true,
     isLossy: true,
     maxBitDepth: 12,
@@ -251,7 +228,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Mobile / HDR',
     mimeType: 'image/heif',
     description: 'ISO standardized container for compressed media and burst sequences.',
-    romanUrduDescription: 'HEIF generic container jo modern mobile cameras me use hota hai.',
     supportsAlpha: true,
     isLossy: true,
     maxBitDepth: 12,
@@ -265,7 +241,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Mobile / HDR',
     mimeType: 'image/jxl',
     description: 'Next-generation lossless and lossy standard designed to succeed JPEG.',
-    romanUrduDescription: 'Agli nasal ka photo format jo existing JPEGs ko baghair kisi loss ke 20% chhota kar deta hai.',
     supportsAlpha: true,
     isLossy: 'both',
     maxBitDepth: 32,
@@ -279,7 +254,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'VFX / HDR',
     mimeType: 'image/x-exr',
     description: 'Industrial Light & Magic 16/32-bit floating point HDR format for VFX.',
-    romanUrduDescription: 'Hollywood VFX aur 3D rendering ke liye 32-bit float high dynamic range format.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 32,
@@ -293,7 +267,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: '3D / HDR',
     mimeType: 'image/vnd.radiance',
     description: 'RGBE high dynamic range format for 3D environment lighting map domes.',
-    romanUrduDescription: '3D models ki realistic environmental lighting ke liye 360 HDR panorama format.',
     supportsAlpha: false,
     isLossy: false,
     maxBitDepth: 32,
@@ -309,7 +282,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Vector Graphic',
     mimeType: 'image/svg+xml',
     description: 'W3C XML vector standard that scales infinitely without losing sharpness.',
-    romanUrduDescription: 'Mathematical vector standard. Jitna marzi zoom kar lo kabhi pixelate nahi hota.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 64,
@@ -323,7 +295,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Vector Graphic',
     mimeType: 'application/postscript',
     description: 'Legacy PostScript vector format for commercial printing presses.',
-    romanUrduDescription: 'Commercial printing presses aur vector packaging ka standard format.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 32,
@@ -337,7 +308,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Vector / Document',
     mimeType: 'application/pdf',
     description: 'Universal document and vector artwork container by Adobe.',
-    romanUrduDescription: 'Universal document container jisme vector shapes, fonts aur rasters sab embed hote hain.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 32,
@@ -351,7 +321,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Native Vector',
     mimeType: 'application/illustrator',
     description: 'Adobe Illustrator vector file with embedded PDF compatibility stream.',
-    romanUrduDescription: 'Adobe Illustrator ki native vector file. Raster me convert karte waqt DPI set karni hoti hai.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 32,
@@ -365,7 +334,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Native Vector',
     mimeType: 'application/coreldraw',
     description: 'CorelDRAW proprietary vector artwork document format.',
-    romanUrduDescription: 'CorelDRAW ka vector file format jo printing aur cutting plotters me use hota hai.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 32,
@@ -381,7 +349,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Layered Project',
     mimeType: 'image/vnd.adobe.photoshop',
     description: 'Adobe Photoshop multi-layer project with masks, smart objects, and filters.',
-    romanUrduDescription: 'Photoshop project. Export par tamam layers merge ho kar flat picture ban jati hain.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 32,
@@ -395,7 +362,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Layered Project',
     mimeType: 'image/vnd.adobe.photoshop',
     description: 'Photoshop format for files exceeding 2GB or 30,000 pixels in dimension.',
-    romanUrduDescription: 'Bari billboards aur giant design files ke liye Photoshop Large format.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 32,
@@ -409,7 +375,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Layered Project',
     mimeType: 'image/x-xcf',
     description: 'GNU Image Manipulation Program native multi-layer document.',
-    romanUrduDescription: 'GIMP open source software ka native layered project format.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 32,
@@ -423,7 +388,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Layered Project',
     mimeType: 'application/x-krita',
     description: 'Krita digital painting application layered archive format.',
-    romanUrduDescription: 'Krita digital painting ka layered project format.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 32,
@@ -437,7 +401,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Layered Project',
     mimeType: 'application/x-affinity-photo',
     description: 'Serif Affinity Photo native multi-layer raster & vector composition.',
-    romanUrduDescription: 'Affinity Photo ka proprietary layered project file.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 32,
@@ -453,7 +416,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Camera RAW / DNG',
     mimeType: 'image/x-adobe-dng',
     description: 'Adobe open standard raw camera sensor archival wrapper format.',
-    romanUrduDescription: 'Adobe ka open-standard raw container jo sabhi camera brands ke sath compatible hai.',
     supportsAlpha: false,
     isLossy: false,
     maxBitDepth: 16,
@@ -467,7 +429,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Camera RAW',
     mimeType: 'image/x-canon-cr2',
     description: 'Canon proprietary digital camera sensor raw data format.',
-    romanUrduDescription: 'Canon DSLR cameras ka physical sensor raw data.',
     supportsAlpha: false,
     isLossy: false,
     maxBitDepth: 14,
@@ -481,7 +442,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Camera RAW',
     mimeType: 'image/x-canon-cr3',
     description: 'Canon modern Digic 8+ camera sensor raw format with C-RAW compression.',
-    romanUrduDescription: 'Canon EOS R mirrorless cameras ka naya CR3 format.',
     supportsAlpha: false,
     isLossy: false,
     maxBitDepth: 14,
@@ -495,7 +455,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Camera RAW',
     mimeType: 'image/x-nikon-nef',
     description: 'Nikon proprietary digital camera sensor uncompressed raw data.',
-    romanUrduDescription: 'Nikon cameras ka original sensor uncompressed data.',
     supportsAlpha: false,
     isLossy: false,
     maxBitDepth: 14,
@@ -509,7 +468,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Camera RAW',
     mimeType: 'image/x-sony-arw',
     description: 'Sony Alpha mirrorless and cinema camera sensor raw data.',
-    romanUrduDescription: 'Sony Alpha cameras ka high dynamic range sensor raw format.',
     supportsAlpha: false,
     isLossy: false,
     maxBitDepth: 14,
@@ -523,7 +481,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Camera RAW',
     mimeType: 'image/x-fuji-raf',
     description: 'Fujifilm proprietary X-Trans or Bayer sensor unprocessed raw data.',
-    romanUrduDescription: 'Fujifilm X-Trans aur GFX sensors ka unique color filter raw data.',
     supportsAlpha: false,
     isLossy: false,
     maxBitDepth: 16,
@@ -537,7 +494,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Camera RAW',
     mimeType: 'image/x-panasonic-rw2',
     description: 'Panasonic Lumix camera sensor raw photography data.',
-    romanUrduDescription: 'Panasonic Lumix cameras ka raw sensor data.',
     supportsAlpha: false,
     isLossy: false,
     maxBitDepth: 14,
@@ -553,7 +509,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Audio File',
     mimeType: 'audio/mpeg',
     description: 'Universal compressed lossy audio format with psychoacoustic encoding.',
-    romanUrduDescription: 'Universal audio standard jo tamam media players me chalta hai.',
     supportsAlpha: false,
     isLossy: true,
     maxBitDepth: 16,
@@ -567,7 +522,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Audio File',
     mimeType: 'audio/wav',
     description: 'Uncompressed raw PCM linear pulse-code modulated audio.',
-    romanUrduDescription: 'Studio recording ka uncompressed lossy-free audio format.',
     supportsAlpha: false,
     isLossy: false,
     maxBitDepth: 32,
@@ -581,7 +535,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Audio File',
     mimeType: 'audio/ogg',
     description: 'Open container compressed lossy audio format.',
-    romanUrduDescription: 'Open-source streaming aur web audio format.',
     supportsAlpha: false,
     isLossy: true,
     maxBitDepth: 16,
@@ -595,7 +548,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Audio File',
     mimeType: 'audio/flac',
     description: 'Lossless audio compression standard preserving bit-for-bit fidelity.',
-    romanUrduDescription: 'Audiophiles ke liye lossless pristine audio format.',
     supportsAlpha: false,
     isLossy: false,
     maxBitDepth: 24,
@@ -609,7 +561,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Audio File',
     mimeType: 'audio/aac',
     description: 'High efficiency lossy audio compression standard.',
-    romanUrduDescription: 'Modern mobile devices aur Apple music ka high-efficiency audio codec.',
     supportsAlpha: false,
     isLossy: true,
     maxBitDepth: 16,
@@ -625,7 +576,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Video File',
     mimeType: 'video/mp4',
     description: 'Universal digital multimedia container format commonly storing H.264/AAC.',
-    romanUrduDescription: 'Universal video format jo web aur mobile me 100% compatible hai.',
     supportsAlpha: false,
     isLossy: true,
     maxBitDepth: 10,
@@ -639,7 +589,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Video File',
     mimeType: 'video/webm',
     description: 'Royalty-free HTML5 video format utilizing VP9/AV1 and Opus audio.',
-    romanUrduDescription: 'Google ka web video format jo transparent video bhi support karta hai.',
     supportsAlpha: true,
     isLossy: true,
     maxBitDepth: 10,
@@ -653,7 +602,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Video File',
     mimeType: 'video/x-msvideo',
     description: 'Microsoft standard multimedia container format.',
-    romanUrduDescription: 'Windows ka legacy video container format.',
     supportsAlpha: false,
     isLossy: true,
     maxBitDepth: 8,
@@ -669,7 +617,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Office Document',
     mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     description: 'Office Open XML word processing document with formatted text and tables.',
-    romanUrduDescription: 'Microsoft Word ka standard document format.',
     supportsAlpha: false,
     isLossy: false,
     maxBitDepth: 0,
@@ -683,7 +630,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Text Document',
     mimeType: 'text/plain',
     description: 'Unformatted UTF-8 standard plain text document.',
-    romanUrduDescription: 'Sada text file baghair kisi formatting ke.',
     supportsAlpha: false,
     isLossy: false,
     maxBitDepth: 0,
@@ -697,7 +643,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Web Document',
     mimeType: 'text/html',
     description: 'Standard markup language for documents designed to be displayed in a web browser.',
-    romanUrduDescription: 'Web browser document jisme styling aur layout include hoti hai.',
     supportsAlpha: true,
     isLossy: false,
     maxBitDepth: 0,
@@ -711,7 +656,6 @@ export const FORMAT_CATALOG: Record<string, FormatMeta> = {
     categoryLabel: 'Markup Document',
     mimeType: 'text/markdown',
     description: 'Lightweight markup language with plain text formatting syntax.',
-    romanUrduDescription: 'Developer friendly lightweight formatted text document.',
     supportsAlpha: false,
     isLossy: false,
     maxBitDepth: 0,
@@ -747,7 +691,6 @@ export function detectFileFormat(file: File): FormatMeta {
       categoryLabel: 'Raster Image',
       mimeType: file.type || 'image/*',
       description: 'Standard digital bitmap image file.',
-      romanUrduDescription: 'Digital image file.',
       supportsAlpha: true,
       isLossy: 'both',
       maxBitDepth: 24,
@@ -764,7 +707,6 @@ export function detectFileFormat(file: File): FormatMeta {
       categoryLabel: 'Audio File',
       mimeType: file.type,
       description: 'Digital audio sound clip.',
-      romanUrduDescription: 'Audio track sound file.',
       supportsAlpha: false,
       isLossy: true,
       maxBitDepth: 16,
@@ -781,7 +723,6 @@ export function detectFileFormat(file: File): FormatMeta {
       categoryLabel: 'Video File',
       mimeType: file.type,
       description: 'Digital video recording.',
-      romanUrduDescription: 'Video movie media file.',
       supportsAlpha: false,
       isLossy: true,
       maxBitDepth: 8,
@@ -797,7 +738,6 @@ export function detectFileFormat(file: File): FormatMeta {
     categoryLabel: 'Document File',
     mimeType: file.type || 'application/octet-stream',
     description: 'Data document file.',
-    romanUrduDescription: 'Data document file.',
     supportsAlpha: false,
     isLossy: false,
     maxBitDepth: 0,
@@ -900,7 +840,6 @@ export function getAvailableTargetsForFormat(sourceMeta: FormatMeta): {
 export function getConversionRuleExplanation(source: FormatMeta, targetExt: string): {
   ruleNumber: GoldenRuleNumber;
   ruleTitle: string;
-  romanUrdu: string;
   english: string;
   warning?: string;
   badgeType: 'direct' | 'rasterize' | 'trace' | 'flatten' | 'impossible' | 'media';
@@ -914,8 +853,6 @@ export function getConversionRuleExplanation(source: FormatMeta, targetExt: stri
     return {
       ruleNumber: 5,
       ruleTitle: 'Golden Rule 5: Image to Camera RAW (Impossible)',
-      romanUrdu:
-        'Namumkin hai! Kyunke camera sensor ka physical uncompressed photosite bayer data software wapas recreate nahi kar sakta.',
       english:
         'Physically impossible: Hardware sensor readouts cannot be synthesized from a processed bitmap. Only generic Adobe DNG linear tags can wrap pixels.',
       warning: 'Sensor hardware data cannot be recreated mathematically.',
@@ -930,14 +867,12 @@ export function getConversionRuleExplanation(source: FormatMeta, targetExt: stri
   ) {
     let warning: string | undefined;
     if (source.supportsAlpha && !targetMeta?.supportsAlpha) {
-      warning = `Transparency Warning: ${source.extension.toUpperCase()} me transparent background hai, lekin ${targetExt.toUpperCase()} transparency support nahi karta (background white ho jayega).`;
+      warning = `Transparency Notice: ${source.extension.toUpperCase()} contains alpha transparency, but ${targetExt.toUpperCase()} does not support transparent backgrounds (will render with solid matte).`;
     }
 
     return {
       ruleNumber: 1,
       ruleTitle: 'Golden Rule 1: Raster to Raster (100% Direct)',
-      romanUrdu:
-        'Ye aapas me 100% direct aur baghair kisi issue ke convert ho jate hain. Pixels directly re-encoded hote hain.',
       english:
         'Direct 1:1 raster pixel translation. Pixel grid is re-encoded into the target container with chosen compression settings.',
       warning,
@@ -950,8 +885,6 @@ export function getConversionRuleExplanation(source: FormatMeta, targetExt: stri
     return {
       ruleNumber: 2,
       ruleTitle: 'Golden Rule 2: Vector to Raster (Resolution / DPI Dependent)',
-      romanUrdu:
-        'Bohat asan hai, bas output resolution (e.g. 1080p, 4K, ya 300 DPI) set karke rasterize karna hota hai. Infinite mathematical formulas physical pixels me render ho jati hain.',
       english:
         'Vector primitives (Bézier curves, lines, fills) are rasterized onto a fixed resolution canvas. Scalability becomes fixed at the selected DPI.',
       badgeType: 'rasterize',
@@ -963,8 +896,6 @@ export function getConversionRuleExplanation(source: FormatMeta, targetExt: stri
     return {
       ruleNumber: 3,
       ruleTitle: 'Golden Rule 3: Raster to Vector (Requires Image Tracing)',
-      romanUrdu:
-        'Direct 1:1 mathematical conversion nahi hoti; software me Image Trace ya Vectorization karni parti hai. Pixels ke edges detect karke Bézier vector paths bante hain.',
       english:
         'Algorithmic contour tracing (Potrace) converts pixel color boundaries into Bézier curves and XML path nodes. Logos & line-art trace cleanest.',
       warning: 'Complex photographic images produce thousands of paths. Best suited for logos, graphics, and line art.',
@@ -977,8 +908,6 @@ export function getConversionRuleExplanation(source: FormatMeta, targetExt: stri
     return {
       ruleNumber: 4,
       ruleTitle: 'Golden Rule 4: Project Files to Image (Flattened Layers)',
-      romanUrdu:
-        'Sab layers flat (merge) ho kar single picture ban jati hain. Adjustment layers aur layer masks non-editable ban jate hain.',
       english:
         'Multi-layer composition is flattened into a single merged canvas. Individual layer edits, text fields, and adjustment layers become baked.',
       warning: 'Layer hierarchy will be merged into a single composite raster plane.',
@@ -991,8 +920,6 @@ export function getConversionRuleExplanation(source: FormatMeta, targetExt: stri
     return {
       ruleNumber: 5,
       ruleTitle: 'Camera RAW Demosaicing & Export',
-      romanUrdu:
-        'RAW sensor data demosaic ho kar full color RGB pixels me develop kiya jata hai.',
       english:
         'Raw sensor Bayer data is interpolated (demosaiced), white-balanced, and color-profiled into standard RGB raster output.',
       badgeType: 'direct',
@@ -1003,8 +930,6 @@ export function getConversionRuleExplanation(source: FormatMeta, targetExt: stri
   return {
     ruleNumber: 0,
     ruleTitle: 'Stream & Container Transcoding',
-    romanUrdu:
-      'Direct stream transcoding aur container conversion smoothly process hoti hai.',
     english:
       'Standard container re-muxing or codec transcoding with sample rate and bit-depth normalization.',
     badgeType: 'media',
@@ -1090,11 +1015,11 @@ export function generateMasterMarkdownTable(): string {
     md += `| **${row.format}** | ${row.cat} | ${row.raster} | ${row.vector} | ${row.proj} | ${row.raw} | ${row.rule} | ${row.alpha} | ${row.bits} | ${row.tools} |\n`;
   }
 
-  md += `\n### 5 Golden Rules Summary (Roman Urdu & English):\n\n`;
+  md += `\n### 5 Golden Rules Summary:\n\n`;
   for (const rule of GOLDEN_RULES) {
     md += `#### Rule ${rule.number}: ${rule.title}\n`;
     md += `- **Coverage**: ${rule.formats}\n`;
-    md += `- **Roman Urdu**: ${rule.romanUrdu}\n`;
+    
     md += `- **Technical English**: ${rule.english}\n`;
     md += `- **Recommended Toolchain**: ${rule.tooling}\n\n`;
   }

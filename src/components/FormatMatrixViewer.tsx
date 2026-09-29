@@ -53,7 +53,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '8-bit',
       lossy: 'Lossy (DCT)',
       tools: 'Sharp, mozjpeg, ImageMagick',
-      romanUrduNote: 'Sub se aam photo format. Transparent background support nahi karta.',
     },
     {
       format: 'PNG',
@@ -68,7 +67,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '8/16-bit',
       lossy: 'Lossless (Deflate)',
       tools: 'Sharp, libpng, oxipng',
-      romanUrduNote: 'Lossless standard. Transparent icons aur sharp graphics ke liye ideal.',
     },
     {
       format: 'WEBP',
@@ -83,7 +81,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '8-bit',
       lossy: 'Lossy & Lossless',
       tools: 'Sharp, cwebp, libwebp',
-      romanUrduNote: 'Google ka web format jo PNG se 26% aur JPG se 34% chhota size deta hai.',
     },
     {
       format: 'AVIF',
@@ -98,7 +95,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '10/12-bit HDR',
       lossy: 'Lossy & Lossless (AV1)',
       tools: 'Sharp, libavif',
-      romanUrduNote: 'Cutting-edge AV1 intra frame standard with high dynamic range.',
     },
     {
       format: 'GIF',
@@ -113,7 +109,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '8-bit (256 colors)',
       lossy: 'Palette Quantized',
       tools: 'Sharp, gifsicle, FFmpeg',
-      romanUrduNote: 'Sirf 256 colors aur binary on/off transparency.',
     },
     {
       format: 'BMP',
@@ -128,7 +123,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '24/32-bit',
       lossy: 'Uncompressed Lossless',
       tools: 'Canvas API, ImageMagick',
-      romanUrduNote: 'Raw pixel grid baghair kisi compression ke.',
     },
     {
       format: 'TIFF',
@@ -143,7 +137,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '16/32-bit Deep',
       lossy: 'Lossless LZW / ZIP',
       tools: 'Sharp, libtiff, Photoshop',
-      romanUrduNote: 'Commercial publishing aur museum scan archival standard.',
     },
     {
       format: 'ICO',
@@ -158,7 +151,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '32-bit RGBA',
       lossy: 'Lossless BMP/PNG sub-streams',
       tools: 'Canvas API, png2ico',
-      romanUrduNote: 'Browser favicons aur Windows desktop application icon container.',
     },
     {
       format: 'TGA',
@@ -173,7 +165,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '24/32-bit',
       lossy: 'Uncompressed / RLE',
       tools: 'ImageMagick, GIMP, DirectX',
-      romanUrduNote: 'Game engines aur 3D texture pipelines ka classic uncompressed format.',
     },
     {
       format: 'DDS',
@@ -188,7 +179,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: 'BCn Compressed',
       lossy: 'DirectX Block Compression',
       tools: 'DirectXTex, Texconv, GIMP',
-      romanUrduNote: 'GPU video memory me direct render hone wala texture container.',
     },
     {
       format: 'PCX',
@@ -203,7 +193,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '8/24-bit',
       lossy: 'Lossless RLE',
       tools: 'ImageMagick, Netpbm',
-      romanUrduNote: 'MS-DOS aur classic gaming era ka run-length encoded bitmap.',
     },
 
     // Mobile / HDR
@@ -220,7 +209,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '10/12-bit',
       lossy: 'HEVC / H.265 Intra',
       tools: 'libheif, Sharp, ImageMagick',
-      romanUrduNote: 'iPhone ka default camera format. Dual camera depth maps bhi store karta hai.',
     },
     {
       format: 'JXL',
@@ -235,7 +223,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '32-bit Float',
       lossy: 'Lossless & VarDCT',
       tools: 'libjxl, cjpegxl',
-      romanUrduNote: 'JPEG XL standard jo existing JPEGs ko bina loss 20% chhota kar deta hai.',
     },
     {
       format: 'EXR',
@@ -250,7 +237,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '16/32-bit Float',
       lossy: 'PIZ / ZIP / DWAA',
       tools: 'OpenEXR, Blender, Nuke',
-      romanUrduNote: 'Hollywood movies aur 3D compositing ke liye 32-bit float lighting format.',
     },
     {
       format: 'HDR',
@@ -265,7 +251,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '32-bit RGBE',
       lossy: 'Radiance Logarithmic',
       tools: 'Radiance, Blender, Three.js',
-      romanUrduNote: '3D environment dome lighting maps ke liye 360 panorama.',
     },
 
     // Vector
@@ -282,7 +267,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: 'Infinite Scalability',
       lossy: 'Lossless Vector Primitives',
       tools: 'Potrace, Inkscape, Resvg, Canvas 2D',
-      romanUrduNote: 'Mathematical formulas. Jitna marzi bara zoom kar lo kabhi pixelate nahi hota.',
     },
     {
       format: 'EPS',
@@ -297,7 +281,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: 'Infinite Scalability',
       lossy: 'Lossless PostScript',
       tools: 'Ghostscript, Adobe Illustrator',
-      romanUrduNote: 'Printing press aur vector branding ka established standard.',
     },
     {
       format: 'PDF',
@@ -312,7 +295,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: 'Standard Print Units',
       lossy: 'Hybrid Vector / Raster',
       tools: 'pdf-lib, Ghostscript, Poppler',
-      romanUrduNote: 'Universal document container jisme fonts, vectors aur rasters sab embed hote hain.',
     },
     {
       format: 'AI',
@@ -327,7 +309,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: 'Infinite Scalability',
       lossy: 'Lossless Vector',
       tools: 'Adobe Illustrator, Inkscape',
-      romanUrduNote: 'Adobe Illustrator ki native vector file. Raster banate waqt DPI specify karni hoti hai.',
     },
     {
       format: 'CDR',
@@ -342,7 +323,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: 'Infinite Scalability',
       lossy: 'Lossless Vector',
       tools: 'CorelDRAW, UniConvertor',
-      romanUrduNote: 'CorelDRAW vector artwork jo signage aur plotting machine cutting me use hota hai.',
     },
 
     // Native Projects
@@ -359,7 +339,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '8/16/32-bit Multi-layer',
       lossy: 'Lossless Layered',
       tools: 'Photoshop, psd-tools, Sharp',
-      romanUrduNote: 'Photoshop multi-layer project. Export par sabhi layers ek chapti picture ban jati hain.',
     },
     {
       format: 'PSB',
@@ -374,7 +353,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '8/16/32-bit Multi-layer',
       lossy: 'Lossless Layered',
       tools: 'Photoshop, psd-tools',
-      romanUrduNote: '30,000 pixels ya 2GB se bari Photoshop files ke liye format.',
     },
     {
       format: 'XCF',
@@ -389,7 +367,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '8/16/32-bit Multi-layer',
       lossy: 'Lossless Layered',
       tools: 'GIMP batch, ImageMagick',
-      romanUrduNote: 'GIMP open source software ka native layered file format.',
     },
     {
       format: 'KRA',
@@ -404,7 +381,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '8/16/32-bit Float',
       lossy: 'Lossless ZIP container',
       tools: 'Krita CLI, unzip archive',
-      romanUrduNote: 'Krita digital painting software ka native layered canvas archive.',
     },
     {
       format: 'AFPHOTO',
@@ -419,7 +395,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '8/16/32-bit Multi-layer',
       lossy: 'Lossless Layered',
       tools: 'Affinity Photo',
-      romanUrduNote: 'Serif Affinity Photo ka proprietary layered document.',
     },
 
     // Camera RAW
@@ -436,7 +411,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '12/14/16-bit Linear',
       lossy: 'Lossless / Lossy DNG',
       tools: 'Adobe DNG, LibRaw, dcraw',
-      romanUrduNote: 'Adobe ka open-standard raw container jo sabhi cameras me archive standard hai.',
     },
     {
       format: 'CR2 / CR3',
@@ -451,7 +425,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '14-bit CFA Sensor',
       lossy: 'Lossless Bayer Sensor Readout',
       tools: 'LibRaw, Canon DPP, dcraw',
-      romanUrduNote: 'Canon DSLR aur EOS mirrorless cameras ka physical photosite raw data.',
     },
     {
       format: 'NEF',
@@ -466,7 +439,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '12/14-bit CFA Sensor',
       lossy: 'Lossless Bayer Sensor Readout',
       tools: 'LibRaw, Nikon NX Studio, dcraw',
-      romanUrduNote: 'Nikon cameras ka original sensor uncompressed data.',
     },
     {
       format: 'ARW',
@@ -481,7 +453,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '14-bit CFA Sensor',
       lossy: 'Uncompressed / Compressed ARW',
       tools: 'LibRaw, Sony Imaging Edge, dcraw',
-      romanUrduNote: 'Sony Alpha mirrorless cameras ka high dynamic range sensor raw format.',
     },
     {
       format: 'RAF',
@@ -496,7 +467,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '14/16-bit X-Trans',
       lossy: 'Lossless X-Trans Sensor',
       tools: 'LibRaw, Fuji X RAW Studio, dcraw',
-      romanUrduNote: 'Fujifilm cameras ka unique 6x6 aperiodic X-Trans color filter sensor data.',
     },
     {
       format: 'RW2',
@@ -511,7 +481,6 @@ export const FormatMatrixViewer: React.FC = () => {
       bits: '12/14-bit CFA Sensor',
       lossy: 'Lossless Lumix Sensor',
       tools: 'LibRaw, SILKYPIX, dcraw',
-      romanUrduNote: 'Panasonic Lumix cameras ka raw sensor data.',
     },
   ];
 
@@ -519,8 +488,7 @@ export const FormatMatrixViewer: React.FC = () => {
     const matchesSearch =
       row.format.toLowerCase().includes(searchQuery.toLowerCase()) ||
       row.categoryLabel.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.tools.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.romanUrduNote.toLowerCase().includes(searchQuery.toLowerCase());
+      row.tools.toLowerCase().includes(searchQuery.toLowerCase()) ;
 
     const matchesCat =
       selectedCategory === 'all' ? true : row.category === selectedCategory;

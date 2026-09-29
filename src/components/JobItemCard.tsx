@@ -188,7 +188,7 @@ export const JobItemCard: React.FC<JobItemCardProps> = ({
           </div>
         </div>
 
-        {/* Technical Rule Callout Banner (Roman Urdu & English) */}
+        {/* Technical Rule Callout Banner */}
         <div className="rounded-xl p-3.5 bg-neutral-100/70 dark:bg-neutral-900/60 border border-neutral-200/80 dark:border-white/10 text-xs backdrop-blur-md relative z-10">
           <div className="flex items-start gap-3">
             <div className="w-7 h-7 rounded-lg bg-neutral-200/70 dark:bg-white/10 flex items-center justify-center shrink-0 mt-0.5 text-neutral-800 dark:text-neutral-200">
