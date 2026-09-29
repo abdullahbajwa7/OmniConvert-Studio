@@ -200,12 +200,8 @@ export const JobItemCard: React.FC<JobItemCardProps> = ({
                   {ruleExplanation.ruleTitle}
                 </span>
               </div>
-              <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed mb-1.5">
-                <span className="font-semibold text-neutral-900 dark:text-white">Roman Urdu:</span>{' '}
-                {ruleExplanation.romanUrdu}
-              </p>
-              <p className="text-neutral-500 dark:text-neutral-400 leading-relaxed">
-                <span className="font-medium text-neutral-700 dark:text-neutral-300">Technical Note:</span>{' '}
+              <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed">
+                <span className="font-medium text-neutral-900 dark:text-white">Technical Principle:</span>{' '}
                 {ruleExplanation.english}
               </p>
 

@@ -19,7 +19,6 @@ export const FormatMatrixViewer: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [activeRuleNumber, setActiveRuleNumber] = useState<number | null>(null);
-  const [languageMode, setLanguageMode] = useState<'both' | 'roman_urdu' | 'english'>('both');
 
   const copyMarkdownTable = () => {
     const md = generateMasterMarkdownTable();
@@ -610,19 +609,10 @@ export const FormatMatrixViewer: React.FC = () => {
 
                 <div className="space-y-2.5 text-xs">
                   <div>
-                    <span className="font-bold text-neutral-800 dark:text-neutral-200">
-                      Roman Urdu:
-                    </span>{' '}
-                    <p className="text-neutral-600 dark:text-neutral-300 mt-0.5 leading-relaxed">
-                      {rule.romanUrdu}
-                    </p>
-                  </div>
-
-                  <div>
                     <span className="font-semibold text-neutral-700 dark:text-neutral-300">
                       Technical Principle:
                     </span>{' '}
-                    <p className="text-neutral-500 dark:text-neutral-400 mt-0.5 leading-relaxed">
+                    <p className="text-neutral-600 dark:text-neutral-300 mt-0.5 leading-relaxed">
                       {rule.english}
                     </p>
                   </div>

@@ -567,23 +567,15 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
               </span>
             </div>
 
-            {/* Stylized Roman Urdu Callout (Clear, comfortable reading typography) */}
+            {/* Technical Physics Note */}
             <div className="mb-3 rounded-xl p-3 bg-white/70 dark:bg-black/40 border border-neutral-200/70 dark:border-white/5">
               <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">
-                <span>Roman Urdu Wazaahat:</span>
+                <Info className="w-3.5 h-3.5" />
+                <span>Technical Standard & Rule Logic:</span>
               </div>
               <p className="text-neutral-800 dark:text-neutral-200 leading-relaxed font-normal text-xs sm:text-[13px]">
-                {ruleExplanation.romanUrdu}
-              </p>
-            </div>
-
-            {/* Technical Physics Note */}
-            <div className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed flex items-start gap-1.5">
-              <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-neutral-400" />
-              <span>
-                <strong className="text-neutral-700 dark:text-neutral-300 font-semibold">Technical Standard:</strong>{' '}
                 {ruleExplanation.english}
-              </span>
+              </p>
             </div>
 
             {/* Transparency Alert (Luminous Amber Notice) */}

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Moon, Sun, ArrowUpRight, FileSpreadsheet, RefreshCw } from 'lucide-react';
+import { Moon, Sun, FileSpreadsheet, RefreshCw } from 'lucide-react';
 
 interface NavbarProps {
-  activeTab: 'converter' | 'matrix' | 'guide';
-  setActiveTab: (tab: 'converter' | 'matrix' | 'guide') => void;
+  activeTab: 'converter' | 'matrix';
+  setActiveTab: (tab: 'converter' | 'matrix') => void;
   isDark: boolean;
   setIsDark: (dark: boolean) => void;
   onQuickSelectCategory: (cat: string) => void;
@@ -80,17 +80,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <FileSpreadsheet className="w-4 h-4" />
             <span>Master Matrix (5 Rules)</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('guide')}
-            className={`transition-colors hover:text-neutral-900 dark:hover:text-white ${
-              activeTab === 'guide'
-                ? 'text-neutral-900 dark:text-white font-bold'
-                : 'text-neutral-500 dark:text-neutral-400'
-            }`}
-          >
-            Roman Urdu Guide
           </button>
         </nav>
 

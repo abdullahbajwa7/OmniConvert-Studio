@@ -4,21 +4,19 @@ import { Navbar } from './components/Navbar';
 import { HeroUploader } from './components/HeroUploader';
 import { ConversionQueue } from './components/ConversionQueue';
 import { FormatMatrixViewer } from './components/FormatMatrixViewer';
-import { RomanUrduGuide } from './components/RomanUrduGuide';
 import { QuickConvertersGrid } from './components/QuickConvertersGrid';
 import { Footer } from './components/Footer';
 import { ConversionJob } from './types/conversion';
 import {
   detectFileFormat,
   getAvailableTargetsForFormat,
-  FORMAT_CATALOG,
 } from './data/formatMatrix';
 import { processConversionJob } from './utils/converterEngine';
 
 export default function App() {
   const [jobs, setJobs] = useState<ConversionJob[]>([]);
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'converter' | 'matrix' | 'guide'>('converter');
+  const [activeTab, setActiveTab] = useState<'converter' | 'matrix'>('converter');
   const [isDark, setIsDark] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       return (
@@ -261,7 +259,7 @@ export default function App() {
       <main className="flex-1">
         {activeTab === 'converter' && (
           <>
-            {/* IN-PLACE HERO SHOWCASE & UPLOADER ("itni jaga pe image show honi chaye") */}
+            {/* IN-PLACE HERO SHOWCASE & UPLOADER */}
             <HeroUploader
               jobs={jobs}
               activeJobId={activeJobId}
@@ -294,8 +292,6 @@ export default function App() {
         )}
 
         {activeTab === 'matrix' && <FormatMatrixViewer />}
-
-        {activeTab === 'guide' && <RomanUrduGuide />}
       </main>
 
       {/* Domain-Native Clean Footer */}
