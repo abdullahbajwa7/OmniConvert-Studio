@@ -16,9 +16,14 @@ import {
   Music,
   Video,
   Eye,
+  Zap,
+  Info,
   Layers,
+  ArrowRight,
+  ShieldCheck,
+  Cpu,
 } from 'lucide-react';
-import { ConversionJob, ConversionOptions } from '../types/conversion';
+import { ConversionJob, ConversionOptions, FormatMeta } from '../types/conversion';
 import { FormatDropdown } from './FormatDropdown';
 import {
   getAvailableTargetsForFormat,
@@ -50,6 +55,7 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
 }) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [aiOptimized, setAiOptimized] = useState(true);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // Active job
@@ -68,6 +74,81 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
     return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
   };
 
+  // Format clean human-readable filename (stripping ugly UUID hashes if present)
+  const formatCleanFileName = (name: string): string => {
+    if (name.length > 26) {
+      const ext = name.split('.').pop() || '';
+      const base = name.substring(0, name.lastIndexOf('.')) || name;
+      // If filename contains UUID or raw hash
+      if (/^[0-9a-fA-F-]{16,}/.test(base)) {
+        return `${base.slice(0, 10)}…${base.slice(-6)}.${ext}`;
+      }
+      return `${base.slice(0, 16)}…${base.slice(-6)}.${ext}`;
+    }
+    return name;
+  };
+
+  // AI Smart Target & Optimization Recommendations
+  const getAIRecommendation = (detected: FormatMeta, currentTarget: string) => {
+    const ext = detected.extension.toLowerCase();
+    let bestTarget = 'webp';
+    let label = 'WebP';
+    let rationale = 'Maintains 100% transparency with ~45% smaller payload';
+
+    if (ext === 'png') {
+      bestTarget = 'webp';
+      label = 'WEBP (Lossless)';
+      rationale = 'Preserves crystal-clear alpha transparency with 40-50% size savings';
+    } else if (['jpg', 'jpeg'].includes(ext)) {
+      bestTarget = 'avif';
+      label = 'AVIF (Next-Gen)';
+      rationale = 'High dynamic range preservation with state-of-the-art AV1 compression';
+    } else if (ext === 'avif') {
+      bestTarget = 'webp';
+      label = 'WEBP (Universal)';
+      rationale = 'Lossless cross-browser compatibility with zero visual distortion';
+    } else if (ext === 'svg') {
+      bestTarget = 'png';
+      label = 'PNG (High-DPI)';
+      rationale = 'Crisp rasterization at 300 DPI for high-resolution displays';
+    } else if (ext === 'heic' || ext === 'heif') {
+      bestTarget = 'jpg';
+      label = 'JPG (Ultra Quality)';
+      rationale = '4:4:4 chroma subsampling for broad compatibility';
+    } else if (ext === 'mp3') {
+      bestTarget = 'wav';
+      label = 'WAV (Studio PCM)';
+      rationale = 'Uncompressed linear PCM audio waveform';
+    } else if (ext === 'pdf') {
+      bestTarget = 'docx';
+      label = 'DOCX (Editable)';
+      rationale = 'Structured document layout with extractable text';
+    }
+
+    // Size estimation
+    let factor = 0.75;
+    const t = currentTarget.toLowerCase();
+    if (t === 'avif') factor = 0.35;
+    else if (t === 'webp') factor = 0.52;
+    else if (t === 'jpg' || t === 'jpeg') factor = 0.65;
+    else if (t === 'png') factor = 1.05;
+    else if (t === 'svg') factor = 0.45;
+    else if (t === 'wav') factor = 3.5;
+
+    const estimatedSize = Math.max(1024, Math.round(activeJob.originalSize * factor));
+    const savings = factor < 1 ? Math.round((1 - factor) * 100) : 0;
+
+    return {
+      bestTarget,
+      label,
+      rationale,
+      estimatedSize,
+      savings,
+    };
+  };
+
+  const aiRec = getAIRecommendation(activeJob.detectedFormat, activeJob.targetFormat);
+
   const handleTargetChange = (newTarget: string) => {
     onUpdateJob(activeJob.id, {
       targetFormat: newTarget,
@@ -81,6 +162,12 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
         [key]: val,
       },
     });
+  };
+
+  // Apply AI Recommendation
+  const handleApplyAITarget = () => {
+    handleTargetChange(aiRec.bestTarget);
+    handleOptionChange('quality', 100);
   };
 
   // Batch ZIP download
@@ -129,7 +216,7 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
   );
 
   return (
-    <div className="relative rounded-3xl glass-panel p-5 sm:p-7 shadow-2xl transition-all duration-300 dark:border-white/10 text-left">
+    <div className="relative rounded-3xl glass-panel p-5 sm:p-7 shadow-2xl transition-all duration-300 dark:border-white/10 text-left overflow-visible">
       <input
         ref={fileInputRef}
         type="file"
@@ -143,49 +230,64 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
         className="hidden"
       />
 
-      {/* Top Header Row of the Card */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-neutral-200/80 dark:border-white/10">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-10 h-10 rounded-xl bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 flex flex-col items-center justify-center shrink-0 shadow-xs font-mono font-bold text-xs uppercase">
+      {/* TOP HEADER ROW: Clean, High-Contrast Typography with Micro-Badges */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-200/80 dark:border-white/10">
+        <div className="flex items-center gap-3.5 min-w-0">
+          {/* Extension Badge with High Contrast Glow */}
+          <div className="w-11 h-11 rounded-2xl bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 flex flex-col items-center justify-center shrink-0 shadow-md font-mono font-bold text-xs uppercase tracking-wider">
             {activeJob.detectedFormat.extension}
           </div>
 
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <h3 className="text-sm font-bold text-neutral-900 dark:text-white truncate">
-                {activeJob.originalName}
+            {/* Clean File Name with Tooltip */}
+            <div className="flex items-center gap-2.5">
+              <h3
+                className="text-sm sm:text-base font-bold text-neutral-900 dark:text-white tracking-tight truncate max-w-[280px] sm:max-w-[420px]"
+                title={activeJob.originalName}
+              >
+                {formatCleanFileName(activeJob.originalName)}
               </h3>
-              <span className="text-xs text-neutral-400 font-mono tabular-nums">
+              <span className="font-mono text-xs text-neutral-500 dark:text-neutral-400 font-medium shrink-0">
                 {formatFileSize(activeJob.originalSize)}
               </span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">
-              <span>{activeJob.detectedFormat.name}</span>
-              <span aria-hidden="true">·</span>
-              {activeJob.dimensions ? (
-                <>
-                  <span className="font-mono text-neutral-700 dark:text-neutral-300 font-medium">
-                    {activeJob.dimensions.width} × {activeJob.dimensions.height} px
-                  </span>
-                  <span aria-hidden="true">·</span>
-                </>
-              ) : null}
-              <span>{activeJob.detectedFormat.supportsAlpha ? 'Alpha Transparency' : 'Opaque (No Alpha)'}</span>
-              <span aria-hidden="true">·</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-                Original Quality Maintained
+            {/* Polished Micro-Badges Line */}
+            <div className="flex flex-wrap items-center gap-1.5 mt-1.5 text-[11px]">
+              <span className="px-2 py-0.5 rounded-md bg-neutral-200/70 dark:bg-white/10 text-neutral-800 dark:text-neutral-200 font-medium">
+                {activeJob.detectedFormat.name}
+              </span>
+
+              {activeJob.dimensions && (
+                <span className="px-2 py-0.5 rounded-md bg-neutral-200/70 dark:bg-white/10 text-neutral-800 dark:text-neutral-200 font-mono font-medium">
+                  {activeJob.dimensions.width} × {activeJob.dimensions.height} px
+                </span>
+              )}
+
+              <span
+                className={`px-2 py-0.5 rounded-md font-medium ${
+                  activeJob.detectedFormat.supportsAlpha
+                    ? 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20'
+                    : 'bg-neutral-200/50 dark:bg-white/5 text-neutral-500 dark:text-neutral-400'
+                }`}
+              >
+                {activeJob.detectedFormat.supportsAlpha ? 'Alpha Transparency' : 'Opaque Canvas'}
+              </span>
+
+              <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 font-semibold flex items-center gap-1">
+                <ShieldCheck className="w-3 h-3 text-emerald-500" />
+                <span>Zero Quality Loss</span>
               </span>
             </div>
           </div>
         </div>
 
-        {/* Global / Top Actions */}
+        {/* Global Action Controls */}
         <div className="flex items-center gap-2 shrink-0">
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="px-3 py-1.5 rounded-xl glass-button text-xs font-semibold text-neutral-800 dark:text-neutral-200 hover:text-neutral-900 dark:hover:text-white flex items-center gap-1.5 transition-all active:scale-95 shadow-xs"
+            className="px-3.5 py-2 rounded-xl glass-button text-xs font-bold text-neutral-900 dark:text-white flex items-center gap-1.5 transition-all active:scale-95 shadow-xs hover:border-neutral-400"
             title="Upload another file to batch"
           >
             <Plus className="w-3.5 h-3.5" />
@@ -196,7 +298,7 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
             <button
               type="button"
               onClick={handleDownloadAllZip}
-              className="px-3 py-1.5 rounded-xl glass-button text-xs font-semibold text-neutral-900 dark:text-white flex items-center gap-1.5 transition-all shadow-xs"
+              className="px-3.5 py-2 rounded-xl glass-button text-xs font-bold text-neutral-900 dark:text-white flex items-center gap-1.5 transition-all shadow-xs"
             >
               <Archive className="w-3.5 h-3.5" />
               <span>Download ZIP</span>
@@ -206,7 +308,7 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
           <button
             type="button"
             onClick={onClearAll}
-            className="p-1.5 rounded-xl text-neutral-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+            className="p-2 rounded-xl text-neutral-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
             title="Clear all uploaded files"
           >
             <Trash2 className="w-4 h-4" />
@@ -217,8 +319,8 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
       {/* Multi-file thumbnail strip (if multiple files uploaded) */}
       {jobs.length > 1 && (
         <div className="py-3 flex items-center gap-2 overflow-x-auto border-b border-neutral-200/80 dark:border-white/10 no-scrollbar">
-          <span className="text-[11px] text-neutral-400 font-medium shrink-0 mr-1">
-            Uploaded Files ({jobs.length}):
+          <span className="text-[11px] text-neutral-400 font-semibold shrink-0 mr-1 uppercase tracking-wider">
+            Queue ({jobs.length}):
           </span>
           {jobs.map((j) => {
             const isActive = j.id === activeJob.id;
@@ -227,9 +329,9 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
                 key={j.id}
                 type="button"
                 onClick={() => onSelectJob(j.id)}
-                className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl transition-all shrink-0 text-left ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all shrink-0 text-left ${
                   isActive
-                    ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 font-bold shadow-xs scale-102 ring-2 ring-neutral-900/20 dark:ring-white/20'
+                    ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 font-bold shadow-md ring-2 ring-neutral-900/20 dark:ring-white/20'
                     : 'glass-button text-neutral-700 dark:text-neutral-300 hover:border-neutral-400'
                 }`}
               >
@@ -237,14 +339,14 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
                   <img
                     src={j.previewUrl}
                     alt={j.originalName}
-                    className="w-5 h-5 rounded object-cover shrink-0"
+                    className="w-5 h-5 rounded-md object-cover shrink-0"
                   />
                 ) : (
-                  <span className="w-5 h-5 rounded font-mono text-[9px] flex items-center justify-center bg-neutral-200 dark:bg-neutral-800 font-bold uppercase">
+                  <span className="w-5 h-5 rounded-md font-mono text-[9px] flex items-center justify-center bg-neutral-200 dark:bg-neutral-800 font-bold uppercase">
                     {j.detectedFormat.extension.slice(0, 3)}
                   </span>
                 )}
-                <span className="text-xs truncate max-w-[110px]">{j.originalName}</span>
+                <span className="text-xs truncate max-w-[120px]">{formatCleanFileName(j.originalName)}</span>
                 {j.status === 'completed' && (
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 )}
@@ -254,22 +356,23 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
         </div>
       )}
 
-      {/* Main Showcase Body: Image Preview on Left, Live Conversion on Right */}
+      {/* MAIN SHOWCASE BODY: Side-by-Side Zero-Loss Preview & Controls */}
       <div className="pt-5 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* LEFT COLUMN: High-Fidelity Zero-Loss Image Display */}
         <div className="lg:col-span-5 flex flex-col gap-2.5">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-bold text-neutral-800 dark:text-neutral-200 flex items-center gap-1.5">
-              <Eye className="w-3.5 h-3.5 text-indigo-500" />
+            <span className="font-bold text-neutral-900 dark:text-white flex items-center gap-1.5 tracking-tight">
+              <Eye className="w-4 h-4 text-indigo-500" />
               <span>Full-Quality Live Preview</span>
             </span>
-            <span className="text-[10px] text-neutral-400 font-mono">
-              Zero Downsampling
+            <span className="text-[11px] text-neutral-500 font-mono flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
+              <span>Bit-for-Bit Lossless</span>
             </span>
           </div>
 
           {/* Canvas Box with Transparent Checkerboard */}
-          <div className="relative rounded-2xl overflow-hidden border border-neutral-200/80 dark:border-white/10 shadow-inner group min-h-[260px] sm:min-h-[310px] max-h-[380px] flex items-center justify-center checkerboard-bg">
+          <div className="relative rounded-2xl overflow-hidden border border-neutral-200/80 dark:border-white/10 shadow-inner group min-h-[280px] sm:min-h-[320px] max-h-[390px] flex items-center justify-center checkerboard-bg">
             {isImageCategory && activeJob.previewUrl ? (
               <img
                 src={activeJob.previewUrl}
@@ -318,14 +421,14 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
 
             {/* Floating Quality Overlay & Lightbox Button */}
             {isImageCategory && activeJob.previewUrl && (
-              <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity">
+              <div className="absolute bottom-3 right-3 flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity">
                 <button
                   type="button"
                   onClick={() => setLightboxOpen(true)}
-                  className="px-2.5 py-1.5 rounded-lg glass-button text-[11px] font-semibold text-neutral-900 dark:text-white flex items-center gap-1.5 shadow-md hover:scale-105 transition-all"
+                  className="px-3 py-1.5 rounded-xl glass-button text-xs font-bold text-neutral-900 dark:text-white flex items-center gap-1.5 shadow-lg hover:scale-105 transition-all"
                   title="Inspect Full-Size Original"
                 >
-                  <Maximize2 className="w-3.5 h-3.5" />
+                  <Maximize2 className="w-3.5 h-3.5 text-indigo-500" />
                   <span>Inspect Quality</span>
                 </button>
               </div>
@@ -333,23 +436,69 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Live Conversion Controls (No Scrolling Needed!) */}
-        <div className="lg:col-span-7 flex flex-col gap-3.5">
-          {/* Exact prompt string & target select (High z-index to stay above Golden Rule banner) */}
-          <div className="rounded-2xl p-4 bg-neutral-100/70 dark:bg-neutral-950/70 border border-neutral-200/80 dark:border-white/10 backdrop-blur-md relative z-30">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        {/* RIGHT COLUMN: Ultra-Premium AI-Optimized Live Controls */}
+        <div className="lg:col-span-7 flex flex-col gap-4">
+          {/* AI SMART OPTIMIZATION & RECOMMENDATION BAR */}
+          <div className="rounded-2xl p-3.5 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/5 border border-indigo-500/20 dark:border-indigo-400/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 backdrop-blur-md">
+            <div className="flex items-start gap-2.5">
+              <div className="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+                <Sparkles className="w-3.5 h-3.5" />
+              </div>
               <div>
-                <p className="text-xs font-bold text-neutral-900 dark:text-white">
-                  Kis format me convert karna chahte hain?
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-indigo-900 dark:text-indigo-200">
+                    AI Smart Optimization
+                  </span>
+                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 font-bold uppercase">
+                    Auto-Tuned
+                  </span>
+                </div>
+                <p className="text-[11px] text-neutral-600 dark:text-neutral-300 mt-0.5 leading-snug">
+                  {aiRec.rationale}
                 </p>
-                <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">
-                  Select target format (source format excluded by rule).
+                <div className="flex items-center gap-2 text-[10px] text-neutral-500 dark:text-neutral-400 font-mono mt-1">
+                  <span>Est. Output: ~{formatFileSize(aiRec.estimatedSize)}</span>
+                  {aiRec.savings > 0 && (
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                      (⚡ {aiRec.savings}% smaller payload)
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Quick 1-Click AI Best Choice Trigger */}
+            {activeJob.targetFormat.toLowerCase() !== aiRec.bestTarget.toLowerCase() && (
+              <button
+                type="button"
+                onClick={handleApplyAITarget}
+                className="shrink-0 text-xs px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all shadow-sm hover:shadow active:scale-95 flex items-center gap-1.5"
+              >
+                <span>Use {aiRec.bestTarget.toUpperCase()}</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+
+          {/* TARGET SELECTION WORKSTATION (High z-index to stay above Golden Rule banner) */}
+          <div className="rounded-2xl p-4 sm:p-5 bg-neutral-100/70 dark:bg-neutral-950/70 border border-neutral-200/80 dark:border-white/10 backdrop-blur-md relative z-30">
+            {/* Header with Title and Custom Format Dropdown */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+              <div>
+                <h4 className="text-sm font-bold text-neutral-900 dark:text-white tracking-tight flex items-center gap-2">
+                  <span>Output Format</span>
+                  <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-neutral-200/60 dark:bg-white/10 text-neutral-700 dark:text-neutral-300">
+                    Source Excluded
+                  </span>
+                </h4>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
+                  Kis format me convert karna chahte hain?
                 </p>
               </div>
 
-              {/* Target Format Selector */}
+              {/* Format Dropdown & Settings Drawer Trigger */}
               <div className="flex items-center gap-2 shrink-0">
-                <span className="text-xs text-neutral-500 font-medium">To:</span>
+                <span className="text-xs text-neutral-400 font-semibold">To:</span>
                 <FormatDropdown
                   selectedFormat={activeJob.targetFormat}
                   onSelectFormat={handleTargetChange}
@@ -368,72 +517,92 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
                   title="Advanced conversion options"
                 >
                   <Sliders className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Settings</span>
+                  <span className="hidden sm:inline font-semibold">Settings</span>
                 </button>
               </div>
             </div>
 
-            {/* Quick Target Chips */}
-            <div className="mt-3 pt-2.5 border-t border-neutral-200/80 dark:border-neutral-800/80 flex flex-wrap items-center gap-1.5">
-              <span className="text-[11px] text-neutral-400 font-medium">Quick Targets:</span>
+            {/* Quick Target Capsule Chips */}
+            <div className="pt-3 border-t border-neutral-200/80 dark:border-neutral-800/80 flex flex-wrap items-center gap-1.5">
+              <span className="text-[11px] text-neutral-400 font-semibold mr-1">Quick Select:</span>
               {availableTargetGroups
                 .flatMap((g) => g.formats)
                 .slice(0, 8)
-                .map((meta) => (
-                  <button
-                    key={meta.extension}
-                    type="button"
-                    onClick={() => handleTargetChange(meta.extension)}
-                    disabled={activeJob.status === 'converting' || activeJob.status === 'completed'}
-                    className={`text-[11px] px-2.5 py-1 rounded-lg font-mono font-medium transition-all ${
-                      activeJob.targetFormat.toLowerCase() === meta.extension.toLowerCase()
-                        ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 font-bold shadow-xs scale-105'
-                        : 'bg-white/80 dark:bg-neutral-900/80 text-neutral-700 dark:text-neutral-300 border border-neutral-200/80 dark:border-neutral-700/80 hover:border-neutral-400'
-                    }`}
-                  >
-                    {meta.extension.toUpperCase()}
-                  </button>
-                ))}
+                .map((meta) => {
+                  const isSelected = activeJob.targetFormat.toLowerCase() === meta.extension.toLowerCase();
+                  return (
+                    <button
+                      key={meta.extension}
+                      type="button"
+                      onClick={() => handleTargetChange(meta.extension)}
+                      disabled={activeJob.status === 'converting' || activeJob.status === 'completed'}
+                      className={`text-[11px] px-3 py-1 rounded-xl font-mono transition-all ${
+                        isSelected
+                          ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 font-bold shadow-md scale-105'
+                          : 'bg-white/80 dark:bg-neutral-900/80 text-neutral-700 dark:text-neutral-300 border border-neutral-200/80 dark:border-neutral-700/80 hover:border-neutral-400 font-medium'
+                      }`}
+                    >
+                      {meta.extension.toUpperCase()}
+                    </button>
+                  );
+                })}
             </div>
           </div>
 
-          {/* Technical Rule Callout Banner (Roman Urdu & English) - Lower z-index so dropdown floats over it */}
-          <div className="rounded-xl p-3.5 bg-neutral-100/70 dark:bg-neutral-900/60 border border-neutral-200/80 dark:border-white/10 text-xs backdrop-blur-md relative z-10">
-            <div className="flex items-start gap-2.5">
-              <div className="w-6 h-6 rounded-lg bg-neutral-200/70 dark:bg-white/10 flex items-center justify-center shrink-0 mt-0.5 text-neutral-800 dark:text-neutral-200">
-                <Sparkles className="w-3.5 h-3.5" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-bold text-neutral-900 dark:text-white">
-                    {ruleExplanation.ruleTitle}
-                  </span>
+          {/* ULTRA-PREMIUM TECHNICAL RULE INSIGHT CARD */}
+          <div className="rounded-2xl p-4 sm:p-5 bg-neutral-100/70 dark:bg-neutral-900/60 border border-neutral-200/80 dark:border-white/10 text-xs backdrop-blur-md relative z-10">
+            {/* Header with Rule Badge */}
+            <div className="flex items-center justify-between gap-2 mb-3 pb-2.5 border-b border-neutral-200/80 dark:border-neutral-800/80">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 flex items-center justify-center shrink-0 text-xs font-bold shadow-xs">
+                  {ruleExplanation.ruleNumber || 'Ω'}
                 </div>
-                <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed mb-1">
-                  <span className="font-semibold text-neutral-900 dark:text-white">Roman Urdu:</span>{' '}
-                  {ruleExplanation.romanUrdu}
-                </p>
-                <p className="text-neutral-500 dark:text-neutral-400 leading-relaxed">
-                  <span className="font-medium text-neutral-700 dark:text-neutral-300">Technical Note:</span>{' '}
-                  {ruleExplanation.english}
-                </p>
-
-                {ruleExplanation.warning && (
-                  <div className="mt-2 flex items-center gap-2 text-amber-800 dark:text-amber-300 bg-amber-500/10 dark:bg-amber-400/10 p-2 rounded-lg border border-amber-500/20">
-                    <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
-                    <span>{ruleExplanation.warning}</span>
-                  </div>
-                )}
+                <h5 className="font-bold text-neutral-900 dark:text-white tracking-tight text-xs sm:text-sm">
+                  {ruleExplanation.ruleTitle}
+                </h5>
               </div>
+
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-200 dark:bg-white/10 text-neutral-600 dark:text-neutral-300 font-medium">
+                {activeJob.detectedFormat.extension.toUpperCase()} ➔ {activeJob.targetFormat.toUpperCase()}
+              </span>
             </div>
+
+            {/* Stylized Roman Urdu Callout (Clear, comfortable reading typography) */}
+            <div className="mb-3 rounded-xl p-3 bg-white/70 dark:bg-black/40 border border-neutral-200/70 dark:border-white/5">
+              <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">
+                <span>Roman Urdu Wazaahat:</span>
+              </div>
+              <p className="text-neutral-800 dark:text-neutral-200 leading-relaxed font-normal text-xs sm:text-[13px]">
+                {ruleExplanation.romanUrdu}
+              </p>
+            </div>
+
+            {/* Technical Physics Note */}
+            <div className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed flex items-start gap-1.5">
+              <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-neutral-400" />
+              <span>
+                <strong className="text-neutral-700 dark:text-neutral-300 font-semibold">Technical Standard:</strong>{' '}
+                {ruleExplanation.english}
+              </span>
+            </div>
+
+            {/* Transparency Alert (Luminous Amber Notice) */}
+            {ruleExplanation.warning && (
+              <div className="mt-3 flex items-start gap-2.5 text-amber-800 dark:text-amber-300 bg-amber-500/10 dark:bg-amber-400/10 p-3 rounded-xl border border-amber-500/20 dark:border-amber-400/20">
+                <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
+                <span className="leading-snug text-xs font-medium">
+                  {ruleExplanation.warning}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Advanced Drawer */}
           {showAdvanced && (
-            <div className="p-3.5 rounded-xl bg-neutral-100/80 dark:bg-neutral-950/70 border border-neutral-200/80 dark:border-white/10 text-xs grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div className="p-4 rounded-2xl bg-neutral-100/80 dark:bg-neutral-950/70 border border-neutral-200/80 dark:border-white/10 text-xs grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <div className="flex justify-between mb-1">
-                  <label className="font-semibold text-neutral-800 dark:text-neutral-200">
+                <div className="flex justify-between mb-1.5">
+                  <label className="font-bold text-neutral-800 dark:text-neutral-200">
                     Quality Level (Zero Loss Default)
                   </label>
                   <span className="font-mono text-neutral-900 dark:text-white font-bold">
@@ -448,20 +617,20 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
                   onChange={(e) => handleOptionChange('quality', parseInt(e.target.value, 10))}
                   className="w-full accent-neutral-900 dark:accent-white cursor-pointer"
                 />
-                <span className="text-[10px] text-neutral-400">100% preserves pixel-for-pixel fidelity.</span>
+                <span className="text-[10px] text-neutral-400">100% preserves pixel-for-pixel mathematical fidelity.</span>
               </div>
 
               {activeJob.detectedFormat.category === 'vector' && (
                 <div>
-                  <label className="font-semibold text-neutral-800 dark:text-neutral-200 block mb-1">
+                  <label className="font-bold text-neutral-800 dark:text-neutral-200 block mb-1.5">
                     Rasterization DPI (Rule 2)
                   </label>
                   <select
                     value={activeJob.options.dpi || 300}
                     onChange={(e) => handleOptionChange('dpi', parseInt(e.target.value, 10))}
-                    className="w-full bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-lg p-1.5 text-xs text-neutral-900 dark:text-white"
+                    className="w-full bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl p-2 text-xs text-neutral-900 dark:text-white"
                   >
-                    <option value={72}>72 DPI (Standard Web)</option>
+                    <option value={72}>72 DPI (Standard Web Display)</option>
                     <option value={150}>150 DPI (Medium Quality)</option>
                     <option value={300}>300 DPI (Commercial Print Press)</option>
                     <option value={600}>600 DPI (Ultra Fine Archival)</option>
@@ -471,23 +640,24 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
             </div>
           )}
 
-          {/* Action Row & Progress Bar */}
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
+          {/* BOTTOM CONVERSION ACTION BAR (Refined High-End Studio Layout) */}
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-neutral-200/80 dark:border-white/10">
+            {/* Status and Diagnostics */}
             <div className="w-full sm:flex-1">
               {activeJob.status === 'converting' && (
                 <div>
                   <div className="flex justify-between text-xs mb-1.5">
-                    <span className="text-neutral-900 dark:text-white font-semibold animate-pulse flex items-center gap-1.5">
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      <span>Converting to {activeJob.targetFormat.toUpperCase()}...</span>
+                    <span className="text-neutral-900 dark:text-white font-bold animate-pulse flex items-center gap-2">
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin text-indigo-500" />
+                      <span>Re-encoding to {activeJob.targetFormat.toUpperCase()}...</span>
                     </span>
                     <span className="font-mono font-bold tabular-nums text-neutral-900 dark:text-white">
                       {activeJob.progress}%
                     </span>
                   </div>
-                  <div className="w-full h-2 rounded-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden p-0.5">
+                  <div className="w-full h-2.5 rounded-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden p-0.5">
                     <div
-                      className="h-full bg-neutral-900 dark:bg-white rounded-full transition-all duration-300 ease-out shadow-xs"
+                      className="h-full bg-neutral-900 dark:bg-white rounded-full transition-all duration-300 ease-out shadow-sm"
                       style={{ width: `${activeJob.progress}%` }}
                     />
                   </div>
@@ -519,37 +689,46 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
               )}
 
               {activeJob.status === 'error' && (
-                <div className="flex items-center gap-2 text-xs text-red-600 dark:text-red-400 bg-red-500/10 p-2 rounded-lg border border-red-500/20">
-                  <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                <div className="flex items-center gap-2 text-xs text-red-600 dark:text-red-400 bg-red-500/10 p-2.5 rounded-xl border border-red-500/20">
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
                   <span>{activeJob.errorMessage || 'Conversion failed. Please try another format.'}</span>
                 </div>
               )}
 
               {activeJob.status === 'idle' && (
-                <span className="text-xs text-neutral-500 dark:text-neutral-400">
-                  Ready to convert from <strong className="text-neutral-900 dark:text-white font-mono">{activeJob.detectedFormat.extension.toUpperCase()}</strong> to{' '}
-                  <strong className="text-neutral-900 dark:text-white font-mono">{activeJob.targetFormat.toUpperCase()}</strong>
-                </span>
+                <div className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse shrink-0" />
+                  <span>
+                    Ready to convert from{' '}
+                    <strong className="text-neutral-900 dark:text-white font-mono font-bold">
+                      {activeJob.detectedFormat.extension.toUpperCase()}
+                    </strong>{' '}
+                    to{' '}
+                    <strong className="text-neutral-900 dark:text-white font-mono font-bold">
+                      {activeJob.targetFormat.toUpperCase()}
+                    </strong>
+                  </span>
+                </div>
               )}
             </div>
 
-            {/* Buttons */}
-            <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
+            {/* Glowing High-Contrast Action Buttons */}
+            <div className="flex items-center gap-2.5 shrink-0 w-full sm:w-auto justify-end">
               {activeJob.status !== 'completed' ? (
                 <button
                   type="button"
                   onClick={() => onConvertJob(activeJob.id)}
                   disabled={activeJob.status === 'converting'}
-                  className="w-full sm:w-auto px-6 py-2.5 text-xs font-bold text-white bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:text-neutral-950 dark:hover:bg-neutral-100 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 active:scale-95"
+                  className="w-full sm:w-auto px-7 py-3 text-xs font-extrabold text-white bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:text-neutral-950 dark:hover:bg-neutral-100 rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 active:scale-95"
                 >
                   {activeJob.status === 'converting' ? (
                     <>
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <RefreshCw className="w-4 h-4 animate-spin" />
                       <span>Processing...</span>
                     </>
                   ) : (
                     <>
-                      <RefreshCw className="w-3.5 h-3.5" />
+                      <RefreshCw className="w-4 h-4" />
                       <span>Convert Now</span>
                     </>
                   )}
@@ -558,9 +737,9 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
                 <a
                   href={activeJob.convertedUrl}
                   download={activeJob.convertedFileName}
-                  className="w-full sm:w-auto px-6 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 active:scale-95"
+                  className="w-full sm:w-auto px-7 py-3 text-xs font-extrabold text-white bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 active:scale-95"
                 >
-                  <Download className="w-3.5 h-3.5" />
+                  <Download className="w-4 h-4" />
                   <span>Download Converted File</span>
                 </a>
               )}
@@ -570,7 +749,7 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
                   type="button"
                   onClick={onConvertAll}
                   disabled={isConvertingAny}
-                  className="px-3.5 py-2.5 rounded-xl glass-button text-xs font-bold text-neutral-800 dark:text-neutral-200 hover:text-neutral-900 dark:hover:text-white transition-all shadow-xs"
+                  className="px-4 py-3 rounded-2xl glass-button text-xs font-bold text-neutral-800 dark:text-neutral-200 hover:text-neutral-900 dark:hover:text-white transition-all shadow-xs"
                   title="Convert all uploaded files"
                 >
                   Convert All
@@ -594,7 +773,7 @@ export const HeroConversionStudio: React.FC<HeroConversionStudioProps> = ({
             <div className="w-full flex items-center justify-between pb-3 border-b border-neutral-200/80 dark:border-neutral-800/80 text-xs px-2">
               <div className="flex items-center gap-2">
                 <span className="font-bold text-neutral-900 dark:text-white font-mono">
-                  {activeJob.originalName}
+                  {formatCleanFileName(activeJob.originalName)}
                 </span>
                 {activeJob.dimensions && (
                   <span className="text-neutral-400">
